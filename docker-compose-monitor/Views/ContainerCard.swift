@@ -27,9 +27,11 @@ struct ContainerCard: View {
                 Button(action: runAction) {
                     Label("Run", systemImage: "play.fill")
                 }
+                .disabled(container.status == .RUNNING)
                 Button(action: stopAction) {
                     Label("Stop", systemImage: "stop.fill")
                 }
+                .disabled(container.status == .STOPPED)
                 Button(action: pullAction) {
                     Label("Pull", systemImage: "square.and.arrow.down.fill")
                 }
@@ -51,14 +53,21 @@ struct ContainerCard: View {
     }
     
     private func runAction() -> Void {
-        
+        DispatchQueue.main.async {
+            let _ = SSHService.dockerRun(of: config, _for: container)
+        }
     }
     
     private func stopAction() -> Void {
-        
+        let _ = SSHService.dockerStop(of: config, _for: container)
     }
     
     private func pullAction() -> Void {
+        let alert = NSAlert()
+        alert.messageText = SSHService.dockerPull(of: config, _for: container)
+        alert.addButton(withTitle: "Roger.")
+        alert.alertStyle = .informational
+        alert.runModal()
         
     }
     

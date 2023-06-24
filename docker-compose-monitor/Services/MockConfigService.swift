@@ -17,25 +17,25 @@ struct MockedData {
     }
     
     static func fetchContainersProd() -> Array<Container> {
-        let container1 = Container(name: "service1prod", status: .RUNNING)
-        let container2 = Container(name: "service2prod", status: .STOPPED)
-        let container3 = Container(name: "service3prod", status: .EXITED)
+        let container1 = Container(name: "service1prod", status: .RUNNING, image: "Image")
+        let container2 = Container(name: "service2prod", status: .STOPPED, image: "Image")
+        let container3 = Container(name: "service3prod", status: .EXITED, image: "Image")
         let data: Array<Container> = [container1, container2, container3]
         return data
     }
     
     static func fetchContainersBeta() -> Array<Container> {
-        let container1 = Container(name: "service1beta", status: .RUNNING)
-        let container2 = Container(name: "service2beta", status: .STOPPED)
-        let container3 = Container(name: "service3beta", status: .EXITED)
+        let container1 = Container(name: "service1beta", status: .RUNNING, image: "Image")
+        let container2 = Container(name: "service2beta", status: .STOPPED, image: "Image")
+        let container3 = Container(name: "service3beta", status: .EXITED, image: "Image")
         let data: Array<Container> = [container1, container2, container3]
         return data
     }
     
     static func fetchContainersDev() -> Array<Container> {
-        let container1 = Container(name: "service1Dev", status: .RUNNING)
-        let container2 = Container(name: "service2Dev", status: .STOPPED)
-        let container3 = Container(name: "service3Dev", status: .EXITED)
+        let container1 = Container(name: "service1Dev", status: .RUNNING, image: "Image")
+        let container2 = Container(name: "service2Dev", status: .STOPPED, image: "Image")
+        let container3 = Container(name: "service3Dev", status: .EXITED, image: "Image")
         let data: Array<Container> = [container1, container2, container3]
         return data
     }

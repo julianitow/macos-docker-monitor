@@ -27,6 +27,7 @@ struct Config: Identifiable {
               let privateKey = json["privateKey"] as? String else {
             throw ParsingError.InvalidDictionnary
         }
+        
         return Config(name: name, host: host, username: username, publicKey: publickey, privateKey: privateKey, containers: [])
     }
 }

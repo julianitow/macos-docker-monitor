@@ -11,6 +11,9 @@ import Shout
 enum DOCKER_COMMANDS: String {
     case DOCKER_PS = "docker ps -a --format json | jq -s"
     case DOCKER_LOGS = "docker logs -t --tail 100 "
+    case DOCKER_STOP = "docker stop "
+    case DOCKER_START = "docker start "
+    case DOCKER_PULL = "docker pull "
 }
 
 class SSHService {
@@ -55,5 +58,47 @@ class SSHService {
             print("\(error)")
             return "Error fetching logs: \(error)"
         }
+    }
+    
+    static func dockerRun(of: Config, _for: Container) -> Bool {
+        guard let session = sessions[of.id] else {
+            return false
+        }
+        do {
+            let cmd = "\(DOCKER_COMMANDS.DOCKER_START.rawValue) \(_for.name)"
+            let (_, _) = try session.capture(cmd)
+            return true
+        } catch {
+            print("\(error)")
+        }
+        return false
+    }
+    
+    static func dockerStop(of: Config, _for: Container) -> Bool {
+        guard let session = sessions[of.id] else {
+            return false
+        }
+        do {
+            let cmd = "\(DOCKER_COMMANDS.DOCKER_STOP.rawValue) \(_for.name)"
+            let (_, _) = try session.capture(cmd)
+            return true
+        } catch {
+            print("\(error)")
+        }
+        return false
+    }
+    
+    static func dockerPull(of: Config, _for: Container) -> String {
+        guard let session = sessions[of.id] else {
+            return "No session"
+        }
+        do {
+            let cmd = "\(DOCKER_COMMANDS.DOCKER_PULL.rawValue) \(_for.image)"
+            let (_, output) = try session.capture(cmd)
+            return output
+        } catch {
+            print("\(error)")
+        }
+        return "Eror while pulling image"
     }
 }
