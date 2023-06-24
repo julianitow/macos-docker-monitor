@@ -14,7 +14,7 @@ enum ContainerStatus: String {
     case RESTARTING = "RESTARTING"
 }
 
-// TODO Add information for containers
+// TODO: Add information for containers
 
 struct Container: Identifiable {
     var id = UUID()
@@ -29,7 +29,7 @@ struct Container: Identifiable {
         
         let status = state == "running" ? ContainerStatus.RUNNING : ContainerStatus.STOPPED
         
-        // TODO Mange more status
+        // TODO: Manage more status
         return Container(name: name, status: status)
     }
 }

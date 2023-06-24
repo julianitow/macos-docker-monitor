@@ -12,6 +12,9 @@
 		EFD29B9E2A4742AF000694D5 /* Shout in Frameworks */ = {isa = PBXBuildFile; productRef = EFD29B9D2A4742AF000694D5 /* Shout */; };
 		EFD29BA02A474A78000694D5 /* OutputParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29B9F2A474A78000694D5 /* OutputParser.swift */; };
 		EFD29BA22A474E54000694D5 /* ParsingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA12A474E54000694D5 /* ParsingError.swift */; };
+		EFD29BA42A4761FE000694D5 /* ContainerOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA32A4761FE000694D5 /* ContainerOutput.swift */; };
+		EFD29BA62A476298000694D5 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA52A476298000694D5 /* View.swift */; };
+		EFD29BA82A47703D000694D5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA72A47703D000694D5 /* Constants.swift */; };
 		EFE6AEC92A46E63000D44F0D /* docker_compose_monitorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AEC82A46E63000D44F0D /* docker_compose_monitorApp.swift */; };
 		EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AECA2A46E63000D44F0D /* ContentView.swift */; };
 		EFE6AECD2A46E63100D44F0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE6AECC2A46E63100D44F0D /* Assets.xcassets */; };
@@ -30,6 +33,9 @@
 		EFD29B9A2A474213000694D5 /* SSHService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHService.swift; sourceTree = "<group>"; };
 		EFD29B9F2A474A78000694D5 /* OutputParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputParser.swift; sourceTree = "<group>"; };
 		EFD29BA12A474E54000694D5 /* ParsingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingError.swift; sourceTree = "<group>"; };
+		EFD29BA32A4761FE000694D5 /* ContainerOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerOutput.swift; sourceTree = "<group>"; };
+		EFD29BA52A476298000694D5 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		EFD29BA72A47703D000694D5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EFE6AEC52A46E63000D44F0D /* docker-compose-monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "docker-compose-monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFE6AEC82A46E63000D44F0D /* docker_compose_monitorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = docker_compose_monitorApp.swift; sourceTree = "<group>"; };
 		EFE6AECA2A46E63000D44F0D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -84,6 +90,7 @@
 				EFE6AECC2A46E63100D44F0D /* Assets.xcassets */,
 				EFE6AED12A46E63100D44F0D /* docker_compose_monitor.entitlements */,
 				EFE6AECE2A46E63100D44F0D /* Preview Content */,
+				EFD29BA72A47703D000694D5 /* Constants.swift */,
 			);
 			path = "docker-compose-monitor";
 			sourceTree = "<group>";
@@ -125,6 +132,7 @@
 				EFE6AEDD2A46E97400D44F0D /* ConfigCard.swift */,
 				EFE6AEE62A46F91000D44F0D /* ContainerCard.swift */,
 				EFE6AECA2A46E63000D44F0D /* ContentView.swift */,
+				EFD29BA32A4761FE000694D5 /* ContainerOutput.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -133,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				EFE6AEEB2A47147500D44F0D /* Color.swift */,
+				EFD29BA52A476298000694D5 /* View.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -213,11 +222,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFD29BA42A4761FE000694D5 /* ContainerOutput.swift in Sources */,
 				EFE6AED82A46E72000D44F0D /* Card.swift in Sources */,
+				EFD29BA62A476298000694D5 /* View.swift in Sources */,
 				EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */,
 				EFE6AEC92A46E63000D44F0D /* docker_compose_monitorApp.swift in Sources */,
 				EFE6AEE92A46F91F00D44F0D /* ContainerModel.swift in Sources */,
 				EFE6AEE42A46EAD200D44F0D /* MockConfigService.swift in Sources */,
+				EFD29BA82A47703D000694D5 /* Constants.swift in Sources */,
 				EFE6AEDE2A46E97400D44F0D /* ConfigCard.swift in Sources */,
 				EFE6AEE12A46EA9C00D44F0D /* ConfigModel.swift in Sources */,
 				EFD29BA02A474A78000694D5 /* OutputParser.swift in Sources */,

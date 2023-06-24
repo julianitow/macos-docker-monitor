@@ -27,6 +27,7 @@ class OutputParser {
         } else {
             print("error in json serialisation")
         }
+        print(containers.count)
         return containers
     }
 }

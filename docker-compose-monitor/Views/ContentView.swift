@@ -13,6 +13,9 @@ struct ContentView: View {
     
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
+    
+    @State private var isCardOpened = false
+    @State private var openedCardIndex = 0
             
     var body: some View {
         GeometryReader { geometry in
@@ -59,35 +62,66 @@ struct ContentView: View {
                                 firstColumnWidth = max(min(newFirstColumnWidth, maxColumnWidth), minColumnWidth)
                             }
                     )
-                VStack {
-                    if selectedConfig != nil {
-                        if selectedConfig!.isConnected {
-                            ForEach(selectedConfig!.containers) {container in
-                                ContainerCard(container: container)
+                GeometryReader { rightGeometry in
+                    let spacing: CGFloat = 1 // Espacement entre les éléments
+                    ScrollView([.horizontal, .vertical]) {
+                        if selectedConfig != nil {
+                            if selectedConfig!.isConnected {
+                                let rows = 5
+                                @State var columns = ((selectedConfig?.containers.count)! + rows - 1) / rows
+                                VStack {
+                                    ForEach(0..<rows) { row in
+                                        HStack(spacing: spacing) {
+                                            ForEach(0..<columns) { column in
+                                                let index = row * columns + column
+                                                if index < (selectedConfig?.containers.count)! {
+                                                    ContainerCard(config: selectedConfig!, container: (selectedConfig?.containers[index])!)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                .frame(maxWidth: .infinity)
+                            } else {
+                                Text("Not connected")
                             }
                         } else {
                             Text("Not connected")
                         }
-                    } else {
-                        Text("Not connected")
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
             }
         }
     }
     
+    private func getContainerCardIndex(row: Int, column: Int, rows: Int) -> Int? {
+        if selectedConfig == nil {
+            return nil
+        }
+        let index = column * rows + row
+        return index
+    }
+    
     private func addConfig() -> Void {
-        // TODO display a window to add a ne config
+        // TODO: display a window to add a ne config
         print("WIP")
     }
     
+    private func toggleCardOpened(for index: Int) {
+        if !isCardOpened {
+            openedCardIndex = index
+        }
+        isCardOpened.toggle()
+    }
+    
     private func toggleSelection(for config: Config) -> Void {
+        self.selectedConfig?.containers = []
         for i in 0..<configs.count {
             if config.id == configs[i].id {
                 configs[i].isSelected.toggle()
                 self.selectedConfig = configs[i]
+                print(self.selectedConfig?.containers.count)
             } else {
                 configs[i].isSelected = false
             }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContainerCard: View {
     
+    @State var config: Config
     @State var container: Container
     @State var displayLogs: Bool = false
     
@@ -43,15 +44,12 @@ struct ContainerCard: View {
                 .padding(.bottom)
             
             if displayLogs {
-                VStack {
-                    Text("Logs")
-                }
-                .frame(width: 600, height: 600)
+                
             }
         }
         .background(container.status == .RUNNING ? Color(hex: "#2ecc71") : container.status == .EXITED ? Color(hex: "#c0392b") : container.status == .STOPPED ? Color(hex: "#95a5a6") : .white)
         .cornerRadius(10)
-        .frame(width: 500)
+        .frame(width: SIZES.CONTAINER_CARD_WIDTH.rawValue)
         .fixedSize(horizontal: false, vertical: true)
         .padding()
     }
@@ -70,12 +68,14 @@ struct ContainerCard: View {
     
     private func showLogs() -> Void {
         self.displayLogs.toggle()
+        ContainerOutput(config: config, container: container).openInWindow(title: container.name, sender: self)
     }
 }
 
 struct ContainerCard_Previews: PreviewProvider {
     static var previews: some View {
+        let config = MockedData.fetchConfigs()[0]
         let container = MockedData.fetchContainersProd()[0]
-        ContainerCard(container: container)
+        ContainerCard(config: config, container: container)
     }
 }

@@ -10,6 +10,7 @@ import Shout
 
 enum DOCKER_COMMANDS: String {
     case DOCKER_PS = "docker ps -a --format json | jq -s"
+    case DOCKER_LOGS = "docker logs -t --tail 100 "
 }
 
 class SSHService {
@@ -39,5 +40,20 @@ class SSHService {
             print("\(error)")
         }
         return []
+    }
+    
+    static func fetchLogs(of: Config, _for: Container) -> String? {
+        guard let session = sessions[of.id] else {
+            return nil
+        }
+        do {
+            let cmd = "\(DOCKER_COMMANDS.DOCKER_LOGS.rawValue) \(_for.name)"
+            print(cmd)
+            let (status, output) = try session.capture(cmd)
+            return try output
+        } catch {
+            print("\(error)")
+            return "Error fetching logs: \(error)"
+        }
     }
 }
