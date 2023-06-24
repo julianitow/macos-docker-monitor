@@ -9,19 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     @State var configs = MockedData.fetchConfigs()
+    @State var selectedConfig: Config?
+    
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
-    
+            
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
                 VStack { // config list
-                    ForEach(configs, id: \.id) { config in
-                        ConfigCard(config: config)
-                            .onTapGesture {
+                    ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
+                        ConfigCard(config: $configs[index])
+                            .gesture(TapGesture(count: 2).onEnded { gesture in
                                 toggleConnection(for: config)
-                                print(config.connected)
-                            }
+                            })
+                            .gesture(TapGesture(count: 1).onEnded {
+                                toggleSelection(for: config)
+                            })
                     }
                 }
                 .frame(width: geometry.size.width * firstColumnWidth)
@@ -39,13 +43,23 @@ struct ContentView: View {
                                 let dragAmount = value.translation.width
                                 let totalWidth = geometry.size.width
                                 let newFirstColumnWidth = firstColumnWidth + dragAmount / totalWidth
-                                let minColumnWidth: CGFloat = 0.1 // Largeur minimale de la première colonne
-                                let maxColumnWidth: CGFloat = 0.8 // Largeur maximale de la première colonne
+                                let minColumnWidth: CGFloat = 0.1
+                                let maxColumnWidth: CGFloat = 0.8
                                 firstColumnWidth = max(min(newFirstColumnWidth, maxColumnWidth), minColumnWidth)
                             }
                     )
                 VStack {
-                    Text("Liste des conteneurs avec leurs status et les actions possibles\n sous forme de cards")
+                    if selectedConfig != nil {
+                        if selectedConfig!.isConnected {
+                            ForEach(selectedConfig!.containers) {container in
+                                ContainerCard(container: container)
+                            }
+                        } else {
+                            Text("Not connected")
+                        }
+                    } else {
+                        Text("Not connected")
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -53,9 +67,21 @@ struct ContentView: View {
         }
     }
     
-    private func toggleConnection(for config: Config) -> Void{
+    private func toggleSelection(for config: Config) -> Void {
+        for i in 0..<configs.count {
+            if config.id == configs[i].id {
+                configs[i].isSelected.toggle()
+                self.selectedConfig = configs[i]
+            } else {
+                configs[i].isSelected = false
+            }
+        }
+    }
+    
+    private func toggleConnection(for config: Config) -> Void {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
-            configs[index].connected.toggle()
+            configs[index].isConnected.toggle()
+            self.toggleSelection(for: configs[index])
         }
     }
 }

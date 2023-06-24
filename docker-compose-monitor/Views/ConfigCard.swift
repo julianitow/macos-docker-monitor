@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ConfigCard: View {
-    var config: Config
+    @Binding var config: Config
     
     var body: some View {
         VStack {
@@ -16,32 +16,24 @@ struct ConfigCard: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .frame(width: 200)
-                .foregroundColor(config.connected ? .white : .black)
+                .foregroundColor(.black)
             
             Spacer()
             
             Image(systemName: "pencil")
                 .font(.title)
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
                 .padding()
             
             Text(config.host)
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
                 .padding(.bottom)
         }
-        .background(config.connected ? Color.blue : Color.white)
+        .background(config.isSelected ? .blue : config.isConnected ? Color(hex: "#2ecc71") : Color(hex: "#95a5a6"))
         .cornerRadius(10)
-        .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
         .frame(minWidth: 100, maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
         .padding()
-    }
-}
-
-struct ConfigCard_Previews: PreviewProvider {
-    static var previews: some View {
-        let config: Config = MockedData.fetchConfigs()[0]
-        ConfigCard(config: config).previewLayout(.sizeThatFits)
     }
 }

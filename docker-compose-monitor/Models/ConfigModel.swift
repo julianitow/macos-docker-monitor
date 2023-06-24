@@ -7,11 +7,13 @@
 
 import Foundation
 
-struct Config {
+struct Config: Identifiable {
     var id = UUID() //identifiable
     let name: String
     let host: String
     let username: String
     let keyPath: String
-    var connected: Bool
+    var isConnected: Bool = false
+    var isSelected: Bool = false
+    var containers: Array<Container>
 }
