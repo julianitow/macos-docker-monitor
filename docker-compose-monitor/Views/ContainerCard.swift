@@ -10,15 +10,15 @@ import SwiftUI
 struct ContainerCard: View {
     
     @State var config: Config
-    @State var container: Container
+    @Binding var container: Container
     @State var displayLogs: Bool = false
-    
+        
     var body: some View {
         VStack {
             Text(container.name.uppercased())
                 .font(.title)
                 .fontWeight(.bold)
-                .frame(width: 200)
+                .frame(width: 300)
                 .foregroundColor(.white)
             
             Spacer()
@@ -42,10 +42,6 @@ struct ContainerCard: View {
                 .font(.subheadline)
                 .foregroundColor(.black)
                 .padding(.bottom)
-            
-            if displayLogs {
-                
-            }
         }
         .background(container.status == .RUNNING ? Color(hex: "#2ecc71") : container.status == .EXITED ? Color(hex: "#c0392b") : container.status == .STOPPED ? Color(hex: "#95a5a6") : .white)
         .cornerRadius(10)
@@ -72,10 +68,10 @@ struct ContainerCard: View {
     }
 }
 
-struct ContainerCard_Previews: PreviewProvider {
-    static var previews: some View {
-        let config = MockedData.fetchConfigs()[0]
-        let container = MockedData.fetchContainersProd()[0]
-        ContainerCard(config: config, container: container)
-    }
-}
+// struct ContainerCard_Previews: PreviewProvider {
+//     static var previews: some View {
+//         let config = MockedData.fetchConfigs()[0]
+//         let container = MockedData.fetchContainersProd()[0]
+//         ContainerCard(config: config, container: container)
+//     }
+// }

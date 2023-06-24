@@ -44,7 +44,6 @@ struct ContainerOutput: View {
                 // TODO: NOT WORKING
                 Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                     text = SSHService.fetchLogs(of: config, _for: container)!
-                    print(text.count)
                 }
             }
         }

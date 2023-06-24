@@ -10,13 +10,16 @@ import SwiftUI
 struct ContentView: View {
     @State var configs = ConfigParserService.fetchConfigs()
     @State var selectedConfig: Config?
+    @State var containers: Array<Container> = []
     
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
     
     @State private var isCardOpened = false
     @State private var openedCardIndex = 0
-            
+    
+    private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+
     var body: some View {
         GeometryReader { geometry in
             HStack(alignment: .top, spacing: 0) {
@@ -74,13 +77,21 @@ struct ContentView: View {
                                         HStack(spacing: spacing) {
                                             ForEach(0..<columns) { column in
                                                 let index = row * columns + column
-                                                if index < (selectedConfig?.containers.count)! {
-                                                    ContainerCard(config: selectedConfig!, container: (selectedConfig?.containers[index])!)
+                                                if index < selectedConfig!.containers.count {
+                                                    @State var config = selectedConfig! // TODO: Finf another solution to update ContainerCard status
+                                                    ContainerCard(config: selectedConfig!, container: $config.containers[index])
                                                 }
                                             }
                                         }
                                     }
                                     
+                                }
+                                .onReceive(timer) { _ in
+                                    if selectedConfig != nil {
+                                        if selectedConfig!.isConnected {
+                                            selectedConfig!.containers = fetchContainersState(for: selectedConfig!)
+                                        }
+                                    }
                                 }
                                 .frame(maxWidth: .infinity)
                             } else {
@@ -108,24 +119,26 @@ struct ContentView: View {
         print("WIP")
     }
     
-    private func toggleCardOpened(for index: Int) {
-        if !isCardOpened {
-            openedCardIndex = index
-        }
-        isCardOpened.toggle()
-    }
-    
     private func toggleSelection(for config: Config) -> Void {
         self.selectedConfig?.containers = []
         for i in 0..<configs.count {
             if config.id == configs[i].id {
                 configs[i].isSelected.toggle()
                 self.selectedConfig = configs[i]
-                print(self.selectedConfig?.containers.count)
+                self.containers = configs[i].containers
             } else {
                 configs[i].isSelected = false
             }
         }
+    }
+    
+    private func fetchContainersState(for config: Config) -> Array<Container> {
+        if let index = configs.firstIndex(where: { $0.id == config.id }) {
+            if connect(to: config) {
+                return SSHService.fetchContainers(of: config)!
+            }
+        }
+        return []
     }
     
     private func toggleConnection(for config: Config) -> Void {
@@ -133,6 +146,7 @@ struct ContentView: View {
             if connect(to: config) {
                 let containers = SSHService.fetchContainers(of: config)
                 configs[index].containers = containers!
+                self.containers = configs[index].containers
                 configs[index].isConnected.toggle()
                 self.toggleSelection(for: configs[index])
             }

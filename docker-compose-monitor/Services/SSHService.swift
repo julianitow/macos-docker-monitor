@@ -34,8 +34,8 @@ class SSHService {
             return nil
         }
         do {
-            let (status, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS.rawValue)
-            return try OutputParser.parseDockerPStoContainer(output: output)
+            let (_, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS.rawValue)
+            return OutputParser.parseDockerPStoContainer(output: output)
         } catch {
             print("\(error)")
         }
@@ -49,8 +49,8 @@ class SSHService {
         do {
             let cmd = "\(DOCKER_COMMANDS.DOCKER_LOGS.rawValue) \(_for.name)"
             print(cmd)
-            let (status, output) = try session.capture(cmd)
-            return try output
+            let (_, output) = try session.capture(cmd)
+            return output
         } catch {
             print("\(error)")
             return "Error fetching logs: \(error)"
