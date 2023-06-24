@@ -97,6 +97,8 @@ struct ContentView: View {
     private func toggleConnection(for config: Config) -> Void {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
             if connect(to: config) {
+                let containers = SSHService.fetchContainers(of: config)
+                configs[index].containers = containers!
                 configs[index].isConnected.toggle()
                 self.toggleSelection(for: configs[index])
             }

@@ -9,7 +9,7 @@ import Foundation
 import Shout
 
 enum DOCKER_COMMANDS: String {
-    case DOCKER_PS = "docker ps"
+    case DOCKER_PS = "docker ps -a --format json | jq -s"
 }
 
 class SSHService {
@@ -28,7 +28,16 @@ class SSHService {
         return false
     }
     
-    static func fetchContainers(of: Config) -> Array<Container> {
+    static func fetchContainers(of: Config) -> Array<Container>? {
+        guard let session = sessions[of.id] else {
+            return nil
+        }
+        do {
+            let (status, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS.rawValue)
+            return try OutputParser.parseDockerPStoContainer(output: output)
+        } catch {
+            print("\(error)")
+        }
         return []
     }
 }

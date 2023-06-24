@@ -7,10 +7,6 @@
 
 import Foundation
 
-enum ParsingError: Error {
-    case InvalidDictionnary
-}
-
 struct Config: Identifiable {
     var id = UUID() //identifiable
     let name: String
