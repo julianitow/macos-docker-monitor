@@ -11,6 +11,10 @@
 		EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AECA2A46E63000D44F0D /* ContentView.swift */; };
 		EFE6AECD2A46E63100D44F0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE6AECC2A46E63100D44F0D /* Assets.xcassets */; };
 		EFE6AED02A46E63100D44F0D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE6AECF2A46E63100D44F0D /* Preview Assets.xcassets */; };
+		EFE6AED82A46E72000D44F0D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AED72A46E72000D44F0D /* Card.swift */; };
+		EFE6AEDE2A46E97400D44F0D /* ConfigCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AEDD2A46E97400D44F0D /* ConfigCard.swift */; };
+		EFE6AEE12A46EA9C00D44F0D /* ConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AEE02A46EA9C00D44F0D /* ConfigModel.swift */; };
+		EFE6AEE42A46EAD200D44F0D /* MockConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AEE32A46EAD200D44F0D /* MockConfigService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +24,10 @@
 		EFE6AECC2A46E63100D44F0D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFE6AECF2A46E63100D44F0D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EFE6AED12A46E63100D44F0D /* docker_compose_monitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = docker_compose_monitor.entitlements; sourceTree = "<group>"; };
+		EFE6AED72A46E72000D44F0D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		EFE6AEDD2A46E97400D44F0D /* ConfigCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigCard.swift; sourceTree = "<group>"; };
+		EFE6AEE02A46EA9C00D44F0D /* ConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConfigModel.swift; path = "docker-compose-monitor/Models/ConfigModel.swift"; sourceTree = SOURCE_ROOT; };
+		EFE6AEE32A46EAD200D44F0D /* MockConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConfigService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,11 +60,15 @@
 		EFE6AEC72A46E63000D44F0D /* docker-compose-monitor */ = {
 			isa = PBXGroup;
 			children = (
+				EFE6AEE22A46EAB700D44F0D /* Services */,
+				EFE6AEDF2A46EA8500D44F0D /* Models */,
 				EFE6AEC82A46E63000D44F0D /* docker_compose_monitorApp.swift */,
 				EFE6AECA2A46E63000D44F0D /* ContentView.swift */,
 				EFE6AECC2A46E63100D44F0D /* Assets.xcassets */,
 				EFE6AED12A46E63100D44F0D /* docker_compose_monitor.entitlements */,
 				EFE6AECE2A46E63100D44F0D /* Preview Content */,
+				EFE6AED72A46E72000D44F0D /* Card.swift */,
+				EFE6AEDD2A46E97400D44F0D /* ConfigCard.swift */,
 			);
 			path = "docker-compose-monitor";
 			sourceTree = "<group>";
@@ -67,6 +79,23 @@
 				EFE6AECF2A46E63100D44F0D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		EFE6AEDF2A46EA8500D44F0D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EFE6AEE02A46EA9C00D44F0D /* ConfigModel.swift */,
+			);
+			name = Models;
+			path = "docker-compose-monitor/Models";
+			sourceTree = SOURCE_ROOT;
+		};
+		EFE6AEE22A46EAB700D44F0D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				EFE6AEE32A46EAD200D44F0D /* MockConfigService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,8 +168,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFE6AED82A46E72000D44F0D /* Card.swift in Sources */,
 				EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */,
 				EFE6AEC92A46E63000D44F0D /* docker_compose_monitorApp.swift in Sources */,
+				EFE6AEE42A46EAD200D44F0D /* MockConfigService.swift in Sources */,
+				EFE6AEDE2A46E97400D44F0D /* ConfigCard.swift in Sources */,
+				EFE6AEE12A46EA9C00D44F0D /* ConfigModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
