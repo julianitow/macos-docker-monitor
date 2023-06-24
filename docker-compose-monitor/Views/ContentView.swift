@@ -79,8 +79,10 @@ struct ContentView: View {
                                             ForEach(0..<columns) { column in
                                                 let index = row * columns + column
                                                 if index < selectedConfig!.containers.count {
-                                                    @State var config = selectedConfig! // TODO: Finf another solution to update ContainerCard status
-                                                    ContainerCard(config: selectedConfig!, container: $config.containers[index])
+                                                    if let config = selectedConfig {
+                                                        let containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                        ContainerCard(config: selectedConfig!, container: containers[index])
+                                                    }
                                                 }
                                             }
                                         }
@@ -90,7 +92,9 @@ struct ContentView: View {
                                 .onReceive(timer) { _ in
                                     if selectedConfig != nil {
                                         if selectedConfig!.isConnected {
-                                            selectedConfig!.containers = fetchContainersState(for: selectedConfig!)
+                                            DispatchQueue.global(qos: .utility).async {
+                                                selectedConfig!.containers = fetchContainersState(for: selectedConfig!)
+                                            }
                                         }
                                     }
                                 }
