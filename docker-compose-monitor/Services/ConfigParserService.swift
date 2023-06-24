@@ -23,12 +23,12 @@ class ConfigParserService {
     
     private static func parseData(_ content: String) -> Array<Config> {
         var configurations: Array<Config> = []
-        if let dictionnary = try? JSONSerialization.jsonObject(with: content.data(using: .utf8)!) as? [String: Any] {
-            if let configs = dictionnary["configs"]! as? [Any] {
+        if let dictionary = try? JSONSerialization.jsonObject(with: content.data(using: .utf8)!) as? [String: Any] {
+            if let configs = dictionary["configs"]! as? [Any] {
                 for config in configs {
-                    if let configDictionnary = config as? [String: Any] {
+                    if let configDictionary = config as? [String: Any] {
                         do {
-                            configurations.append(try Config.fromJson(json: configDictionnary))
+                            configurations.append(try Config.fromJson(json: configDictionary))
                         } catch {
                             print("\(error)")
                         }
