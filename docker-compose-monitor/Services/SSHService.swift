@@ -20,7 +20,7 @@ class SSHService {
     
     static var sessions: Dictionary<UUID, SSH> = [:]
     
-    static func connect(to: Config) -> Bool {
+    static func connect(to: Config) throws -> Bool {
         do {
             let session = try SSH(host: to.host)
             try session.authenticate(username: to.username, privateKey: to.privateKey, publicKey: to.publicKey)
@@ -28,8 +28,8 @@ class SSHService {
             return true
         } catch {
             print("\(error)")
+            throw error
         }
-        return false
     }
     
     static func fetchContainers(of: Config) -> Array<Container>? {

@@ -154,7 +154,12 @@ struct ContentView: View {
     }
     
     private func connect(to config: Config) -> Bool {
-        return SSHService.connect(to: config)
+        do {
+            return try SSHService.connect(to: config)
+        } catch {
+            Utils.alertError(error: error)
+        }
+        return false
     }
 }
 
