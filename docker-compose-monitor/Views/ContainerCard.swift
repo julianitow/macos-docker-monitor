@@ -89,10 +89,11 @@ struct ContainerCard: View {
     }
 }
 
-// struct ContainerCard_Previews: PreviewProvider {
-//     static var previews: some View {
-//         let config = MockedData.fetchConfigs()[0]
-//         let container = MockedData.fetchContainersProd()[0]
-//         ContainerCard(config: config, container: container)
-//     }
-// }
+struct ContainerCard_Previews: PreviewProvider {
+    static var previews: some View {
+        let config = MockedData.fetchConfigs()[0]
+        var container = MockedData.fetchContainersProd()[0]
+        let bindingContainer = Binding { container } set: { container = $0 }
+        ContainerCard(config: config, container: bindingContainer)
+    }
+}
