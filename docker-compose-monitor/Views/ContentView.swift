@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var configs = MockedData.fetchConfigs()
+    @State var configs = ConfigParserService.fetchConfigs()
     @State var selectedConfig: Config?
     
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
+    
+    init() {
+        print(configs)
+    }
             
     var body: some View {
         GeometryReader { geometry in

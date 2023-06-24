@@ -1,0 +1,6 @@
+framework module Pods_docker_compose_monitor {
+  umbrella header "Pods-docker-compose-monitor-umbrella.h"
+
+  export *
+  module * { export * }
+}

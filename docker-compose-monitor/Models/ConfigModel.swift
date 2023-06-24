@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum ParsingError: Error {
+    case InvalidDictionnary
+}
+
 struct Config: Identifiable {
     var id = UUID() //identifiable
     let name: String
@@ -16,4 +20,15 @@ struct Config: Identifiable {
     var isConnected: Bool = false
     var isSelected: Bool = false
     var containers: Array<Container>
+    
+    static func fromJson(json: [String: Any]) throws -> Config {
+        print(json)
+        guard let name = json["name"] as? String,
+              let host = json["host"] as? String,
+              let username = json["username"] as? String,
+              let keyPath = json["key"] as? String else {
+            throw ParsingError.InvalidDictionnary
+        }
+        return Config(name: name, host: host, username: username, keyPath: keyPath, containers: [])
+    }
 }
