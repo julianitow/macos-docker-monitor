@@ -39,7 +39,7 @@ struct ContainerOutput: View {
                 }
             }
         }
-        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 800, maxHeight: .infinity)
+        .frame(minWidth: 800, maxWidth: .infinity, minHeight: 800, maxHeight: .infinity)
         .task {
             updateText()
         }

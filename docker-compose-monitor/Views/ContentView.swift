@@ -106,6 +106,7 @@ struct ContentView: View {
                             Text("Not connected")
                         }
                     }
+                    .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
                 }
             }
         }
