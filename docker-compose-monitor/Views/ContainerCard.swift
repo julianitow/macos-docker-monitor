@@ -54,17 +54,29 @@ struct ContainerCard: View {
     
     private func runAction() -> Void {
         DispatchQueue.main.async {
-            let _ = SSHService.dockerRun(of: config, _for: container)
+            do {
+                let _ = try SSHService.dockerRun(of: config, _for: container)
+            } catch {
+                Utils.alertError(error: error)
+            }
         }
     }
     
     private func stopAction() -> Void {
-        let _ = SSHService.dockerStop(of: config, _for: container)
+        do {
+            let _ = try SSHService.dockerStop(of: config, _for: container)
+        } catch {
+            Utils.alertError(error: error)
+        }
     }
     
     private func pullAction() -> Void {
         let alert = NSAlert()
-        alert.messageText = SSHService.dockerPull(of: config, _for: container)
+        do {
+            alert.messageText = try SSHService.dockerPull(of: config, _for: container)
+        } catch {
+            Utils.alertError(error: error)
+        }
         alert.addButton(withTitle: "Roger.")
         alert.alertStyle = .informational
         alert.runModal()

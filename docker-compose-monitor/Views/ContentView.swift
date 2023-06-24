@@ -135,7 +135,11 @@ struct ContentView: View {
     private func fetchContainersState(for config: Config) -> Array<Container> {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
             if connect(to: config) {
-                return SSHService.fetchContainers(of: config)!
+                do {
+                    return try SSHService.fetchContainers(of: config)!
+                } catch {
+                    Utils.alertError(error: error)
+                }
             }
         }
         return []
@@ -144,11 +148,15 @@ struct ContentView: View {
     private func toggleConnection(for config: Config) -> Void {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
             if connect(to: config) {
-                let containers = SSHService.fetchContainers(of: config)
-                configs[index].containers = containers!
-                self.containers = configs[index].containers
-                configs[index].isConnected.toggle()
-                self.toggleSelection(for: configs[index])
+                do {
+                    let containers = try SSHService.fetchContainers(of: config)
+                    configs[index].containers = containers!
+                    self.containers = configs[index].containers
+                    configs[index].isConnected.toggle()
+                    self.toggleSelection(for: configs[index])
+                } catch {
+                    Utils.alertError(error: error)
+                }
             }
         }
     }

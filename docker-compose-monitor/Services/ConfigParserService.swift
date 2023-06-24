@@ -16,6 +16,7 @@ class ConfigParserService {
             let data = try String(contentsOf: path)
             return parseData(data)
         } catch  {
+            Utils.alertError(error: error)
             print("Erreur lors de la lecture du fichier : \(error)")
         }
         return []
@@ -30,6 +31,7 @@ class ConfigParserService {
                         do {
                             configurations.append(try Config.fromJson(json: configDictionary))
                         } catch {
+                            Utils.alertError(error: error)
                             print("\(error)")
                         }
                     }

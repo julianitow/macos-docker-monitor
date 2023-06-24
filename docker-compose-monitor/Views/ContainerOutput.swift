@@ -50,12 +50,20 @@ struct ContainerOutput: View {
     
     private func updateText() -> Void {
         DispatchQueue.global(qos: .utility).async {
-            text = SSHService.fetchLogs(of: config, _for: container)!
+            do {
+                text = try SSHService.fetchLogs(of: config, _for: container)!
+            } catch {
+                Utils.alertError(error: error)
+            }
         }
     }
     
     private func refreshAction() -> Void {
-        text = SSHService.fetchLogs(of: config, _for: container)!
+        do {
+            text = try SSHService.fetchLogs(of: config, _for: container)!
+        } catch {
+            Utils.alertError(error: error)
+        }
     }
     
     private func scrollToBottom(proxy: ScrollViewProxy) -> Void {

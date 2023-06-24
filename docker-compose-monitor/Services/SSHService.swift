@@ -32,7 +32,7 @@ class SSHService {
         }
     }
     
-    static func fetchContainers(of: Config) -> Array<Container>? {
+    static func fetchContainers(of: Config) throws -> Array<Container>? {
         guard let session = sessions[of.id] else {
             return nil
         }
@@ -45,7 +45,7 @@ class SSHService {
         return []
     }
     
-    static func fetchLogs(of: Config, _for: Container) -> String? {
+    static func fetchLogs(of: Config, _for: Container) throws -> String? {
         guard let session = sessions[of.id] else {
             return nil
         }
@@ -60,7 +60,7 @@ class SSHService {
         }
     }
     
-    static func dockerRun(of: Config, _for: Container) -> Bool {
+    static func dockerRun(of: Config, _for: Container) throws -> Bool {
         guard let session = sessions[of.id] else {
             return false
         }
@@ -74,7 +74,7 @@ class SSHService {
         return false
     }
     
-    static func dockerStop(of: Config, _for: Container) -> Bool {
+    static func dockerStop(of: Config, _for: Container) throws -> Bool {
         guard let session = sessions[of.id] else {
             return false
         }
@@ -88,7 +88,7 @@ class SSHService {
         return false
     }
     
-    static func dockerPull(of: Config, _for: Container) -> String {
+    static func dockerPull(of: Config, _for: Container) throws -> String {
         guard let session = sessions[of.id] else {
             return "No session"
         }
