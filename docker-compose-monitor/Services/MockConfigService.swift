@@ -9,9 +9,9 @@ import Foundation
 
 struct MockedData {
     static func fetchConfigs() -> Array<Config> {
-        let config1 = Config(name: "PROD", host: "192.168.2.3", username: "username", keyPath: "path_to_key", isConnected: false, containers: fetchContainersProd())
-        let config2 = Config(name: "BETA", host: "192.168.2.3", username: "username", keyPath: "path_to_key", isConnected: false, containers: fetchContainersBeta())
-        let config3 = Config(name: "DEV", host: "192.168.2.3", username: "username", keyPath: "path_to_key", isConnected: false, containers: fetchContainersDev())
+        let config1 = Config(name: "PROD", host: "192.168.2.3", username: "username", publicKey: "path_to_key", privateKey: "path_to_key", isConnected: false, containers: fetchContainersProd())
+        let config2 = Config(name: "BETA", host: "192.168.2.3", username: "username", publicKey: "path_to_key", privateKey: "path_to_key", isConnected: false, containers: fetchContainersBeta())
+        let config3 = Config(name: "DEV", host: "192.168.2.3", username: "username", publicKey: "path_to_key", privateKey: "path_to_key", isConnected: false, containers: fetchContainersDev())
         let data: Array<Config> = [config1, config2, config3]
         return data
     }

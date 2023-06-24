@@ -13,10 +13,6 @@ struct ContentView: View {
     
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
-    
-    init() {
-        print(configs)
-    }
             
     var body: some View {
         GeometryReader { geometry in
@@ -100,9 +96,15 @@ struct ContentView: View {
     
     private func toggleConnection(for config: Config) -> Void {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
-            configs[index].isConnected.toggle()
-            self.toggleSelection(for: configs[index])
+            if connect(to: config) {
+                configs[index].isConnected.toggle()
+                self.toggleSelection(for: configs[index])
+            }
         }
+    }
+    
+    private func connect(to config: Config) -> Bool {
+        return SSHService.connect(to: config)
     }
 }
 

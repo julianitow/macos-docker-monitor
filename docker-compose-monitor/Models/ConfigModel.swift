@@ -16,19 +16,21 @@ struct Config: Identifiable {
     let name: String
     let host: String
     let username: String
-    let keyPath: String
+    let publicKey: String
+    let privateKey: String
+    var port: Int = 22
     var isConnected: Bool = false
     var isSelected: Bool = false
     var containers: Array<Container>
     
     static func fromJson(json: [String: Any]) throws -> Config {
-        print(json)
         guard let name = json["name"] as? String,
               let host = json["host"] as? String,
               let username = json["username"] as? String,
-              let keyPath = json["key"] as? String else {
+              let publickey = json["publicKey"] as? String,
+              let privateKey = json["privateKey"] as? String else {
             throw ParsingError.InvalidDictionnary
         }
-        return Config(name: name, host: host, username: username, keyPath: keyPath, containers: [])
+        return Config(name: name, host: host, username: username, publicKey: publickey, privateKey: privateKey, containers: [])
     }
 }
