@@ -12,6 +12,7 @@ enum ContainerStatus: String {
     case STOPPED = "STOPPED"
     case EXITED = "EXITED"
     case RESTARTING = "RESTARTING"
+    case PULLING = "PULLING"
 }
 
 // TODO: Add information for containers

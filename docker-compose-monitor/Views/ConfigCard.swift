@@ -14,6 +14,7 @@ struct ConfigCard: View {
     var body: some View {
         VStack (alignment: .leading) {
             HStack {
+                Image(systemName: config.isConnected ? "point.3.filled.connected.trianglepath.dotted": "point.3.connected.trianglepath.dotted")
                 Text(config.name.uppercased())
                     .font(.title)
                     .fontWeight(.bold)

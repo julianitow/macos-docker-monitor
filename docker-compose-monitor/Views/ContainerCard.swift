@@ -12,14 +12,18 @@ struct ContainerCard: View {
     @State var config: Config
     @Binding var container: Container
     @State var displayLogs: Bool = false
+    @State var status: String = ""
         
     var body: some View {
         VStack {
-            Text(container.name.uppercased())
-                .font(.title)
-                .fontWeight(.bold)
-                .frame(width: 300)
-                .foregroundColor(.white)
+            HStack {
+                Image(systemName: "shippingbox.fill")
+                Text(container.name.uppercased())
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .frame(width: 300)
+                    .foregroundColor(.white)
+            }
             
             Spacer()
             
@@ -39,8 +43,9 @@ struct ContainerCard: View {
                     Label("Show logs", systemImage: "play.display")
                 }
             }
+            .padding()
                     
-            Text(container.status.rawValue)
+            Text(status)
                 .font(.subheadline)
                 .foregroundColor(.black)
                 .padding(.bottom)
@@ -50,6 +55,9 @@ struct ContainerCard: View {
         .frame(width: SIZES.CONTAINER_CARD_WIDTH.rawValue)
         .fixedSize(horizontal: false, vertical: true)
         .padding()
+        .onAppear {
+            status = container.status.rawValue
+        }
     }
     
     private func runAction() -> Void {
@@ -71,6 +79,7 @@ struct ContainerCard: View {
     }
     
     private func pullAction() -> Void {
+        status = ContainerStatus.PULLING.rawValue
         let alert = NSAlert()
         do {
             alert.messageText = try SSHService.dockerPull(of: config, _for: container)
@@ -80,7 +89,7 @@ struct ContainerCard: View {
         alert.addButton(withTitle: "Roger.")
         alert.alertStyle = .informational
         alert.runModal()
-        
+        status = container.status.rawValue
     }
     
     private func showLogs() -> Void {
