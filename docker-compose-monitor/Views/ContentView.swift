@@ -30,19 +30,20 @@ struct ContentView: View {
                     .padding()
                     Divider()
                     ScrollView(.vertical) {
-                        VStack (spacing: 5) {
-                            ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
-                                ConfigCard(config: $configs[index])
-                                    .gesture(TapGesture(count: 2).onEnded { gesture in
-                                        toggleConnection(for: config)
-                                    })
-                                    .gesture(TapGesture(count: 1).onEnded {
-                                        toggleSelection(for: config)
-                                    })
+                        GeometryReader { scrollGeometry in
+                            VStack (spacing: 5) {
+                                ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
+                                    ConfigCard(config: $configs[index], geometryProxy: scrollGeometry)
+                                        .gesture(TapGesture(count: 2).onEnded { gesture in
+                                            toggleConnection(for: config)
+                                        })
+                                        .gesture(TapGesture(count: 1).onEnded {
+                                            toggleSelection(for: config)
+                                        })
+                                }
                             }
+                            .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                         }
-                        .frame(width: geometry.size.width)
-                        .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                     }
                 }
                 .frame(width: geometry.size.width * firstColumnWidth)

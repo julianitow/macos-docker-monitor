@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ConfigCard: View {
     @Binding var config: Config
+    var geometryProxy: GeometryProxy
     
     var body: some View {
         VStack (alignment: .leading) {
@@ -16,7 +17,7 @@ struct ConfigCard: View {
                 Text(config.name.uppercased())
                     .font(.title)
                     .fontWeight(.bold)
-                    .frame(width: 100)
+                    .frame(width: geometryProxy.size.width - 100)
                     .foregroundColor(.black)
                 Spacer()
                 Image(systemName: "pencil")
@@ -32,7 +33,6 @@ struct ConfigCard: View {
                         alert.runModal()
                     }
             }
-            .frame(width: 200)
             HStack {
                 Text(config.host)
                     .font(.subheadline)
@@ -44,6 +44,7 @@ struct ConfigCard: View {
         .background(config.isSelected ? .blue : config.isConnected ? Color(hex: "#2ecc71") : Color(hex: "#95a5a6"))
         .cornerRadius(10)
         .fixedSize(horizontal: false, vertical: true)
+        .frame(width: geometryProxy.size.width - 30)
         .padding()
     }
 }
