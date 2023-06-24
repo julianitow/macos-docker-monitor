@@ -15,6 +15,8 @@ struct ContainerOutput: View {
     @State var text: String = ""
     @State private var scrollViewProxy: ScrollViewProxy?
     
+    private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
     var body: some View {
         VStack {
             Button(action: refreshAction) {
@@ -39,13 +41,16 @@ struct ContainerOutput: View {
         }
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 800, maxHeight: .infinity)
         .task {
-            DispatchQueue.global(qos: .utility).async {
-                text = SSHService.fetchLogs(of: config, _for: container)!
-                // TODO: NOT WORKING
-                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    text = SSHService.fetchLogs(of: config, _for: container)!
-                }
-            }
+            updateText()
+        }
+        .onReceive(timer) { _ in
+            updateText()
+        }
+    }
+    
+    private func updateText() -> Void {
+        DispatchQueue.global(qos: .utility).async {
+            text = SSHService.fetchLogs(of: config, _for: container)!
         }
     }
     

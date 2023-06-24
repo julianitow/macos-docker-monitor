@@ -25,9 +25,10 @@ struct ConfigCard: View {
                     .padding()
                     .onTapGesture {
                         let alert = NSAlert()
-                        alert.informativeText = "Coming soon"
+                        alert.informativeText = "Edition not implemented yet"
+                        alert.messageText = "name : \(config.name) \n host: \(config.host) \n port: \(config.port) \n Connected: \(config.isConnected)"
                         alert.addButton(withTitle: "Roger that.")
-                        alert.alertStyle = .warning
+                        alert.alertStyle = .informational
                         alert.runModal()
                     }
             }
@@ -42,7 +43,6 @@ struct ConfigCard: View {
         }
         .background(config.isSelected ? .blue : config.isConnected ? Color(hex: "#2ecc71") : Color(hex: "#95a5a6"))
         .cornerRadius(10)
-        .frame(minWidth: 100, maxWidth: 100)
         .fixedSize(horizontal: false, vertical: true)
         .padding()
     }
