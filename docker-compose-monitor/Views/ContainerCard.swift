@@ -77,6 +77,7 @@ struct ContainerCard: View {
                     isStarting = false
                 }
             }
+            isStarting = false
         }
     }
     
