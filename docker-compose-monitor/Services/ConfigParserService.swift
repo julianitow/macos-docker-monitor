@@ -32,7 +32,6 @@ class ConfigParserService {
             var configs = fetchConfigs()
             configs.append(config)
             let configsJsonStr = configsToJsonStr(configs: configs)
-            print(configsJsonStr)
             try FileService.writeToFile(filePath: configPath, content: configsJsonStr)
         } catch {
             Utils.alertError(error: error)

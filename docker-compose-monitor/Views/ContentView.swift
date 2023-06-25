@@ -22,6 +22,7 @@ struct ContentView: View {
     @State var searchFilter: String = ""
     
     @State private var isConfigFormPresented: Bool = false
+    @State private var isLoading = false
     
     private let sshService = SSHService.self
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
@@ -92,13 +93,13 @@ struct ContentView: View {
                                 // TODO: Fix when selecting another config with differents columns count displays bad count of containers
                                 let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
                                 VStack {
-                                    ForEach(0..<rows) { row in
+                                    ForEach(0..<rows, id: \.self) { row in
                                         HStack(spacing: spacing) {
                                             ForEach(0..<columns, id: \.self) { column in
                                                 let index = row * columns + column
-                                                if index < selectedConfig!.containers.count {
-                                                    if let config = selectedConfig {
-                                                        let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                if let config = selectedConfig {
+                                                    let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                    if index < selectedConfig!.containers.count {
                                                         ContainerCard(config: selectedConfig!, container: _containers[index])
                                                     }
                                                 }
@@ -113,8 +114,8 @@ struct ContentView: View {
                                             DispatchQueue.global(qos: .utility).async {
                                                 let _containers = fetchContainersState(for: selectedConfig!)
                                                 if searchFilter.count == 0 {
-                                                    selectedConfig!.containers = _containers
-                                                    containers = selectedConfig!.containers
+                                                    selectedConfig?.containers = _containers
+                                                    containers = selectedConfig?.containers ?? []
                                                 } else {
                                                     let containerSelected = _containers.first(where: {$0.name == selectedConfig?.containers[0].name})!
                                                     selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
@@ -128,7 +129,7 @@ struct ContentView: View {
                                 Text("Not connected")
                             }
                         } else {
-                            Text("Not connected")
+                            Text("No configuration selected")
                         }
                     }
                     .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
@@ -170,10 +171,6 @@ struct ContentView: View {
     private func addConfig() -> Void {
         // TODO: display a window to add a ne config
         isConfigFormPresented = true
-        /*let alert = NSAlert()
-        alert.messageText = "Not implemented yet"
-        alert.informativeText = "Edition from GUI not done yet, WIP, please edit configuration file directory"
-        alert.runModal()*/
     }
     
     private func fetchContainersState(for config: Config) -> Array<Container> {
@@ -190,16 +187,14 @@ struct ContentView: View {
     }
     
     private func toggleSelection(for config: Config) -> Void {
-        self.selectedConfig?.containers = []
-        for i in 0..<configs.count {
-            if config.id == configs[i].id {
-                configs[i].isSelected.toggle()
-                self.selectedConfig = configs[i]
-                self.containers = configs[i].containers
-            } else {
-                configs[i].isSelected = false
-            }
+        isLoading = true
+        if selectedConfig?.id == config.id {
+            selectedConfig = nil
+            return
         }
+        selectedConfig = config
+        selectedConfig?.containers = []
+        print(config.name, selectedConfig!.name)
     }
     
     private func toggleConnection(for config: Config) -> Void {
@@ -207,16 +202,19 @@ struct ContentView: View {
             if let index = configs.firstIndex(where: { $0.id == config.id }) {
                 if config.connectionStatus == .CONNECTED {
                     configs[index].connectionStatus = .DISCONNECTED
+                    if selectedConfig?.id == configs[index].id {
+                        selectedConfig = nil
+                    }
                     return
                 }
                 configs[index].connectionStatus = .CONNECTING
                 if connect(to: config) {
                     do {
-                        let containers = try sshService.fetchContainers(of: config)
-                        configs[index].containers = containers!
-                        self.containers = configs[index].containers
+                        selectedConfig = nil
+                        containers = try sshService.fetchContainers(of: config) ?? []
+                        configs[index].containers = containers
                         configs[index].connectionStatus = .CONNECTED
-                        self.toggleSelection(for: configs[index])
+                        selectedConfig = configs[index]
                     } catch {
                         DispatchQueue.main.async {
                             Utils.alertError(error: error)
