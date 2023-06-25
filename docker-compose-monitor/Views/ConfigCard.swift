@@ -26,12 +26,7 @@ struct ConfigCard: View {
                     .foregroundColor(.black)
                     .padding()
                     .onTapGesture {
-                        let alert = NSAlert()
-                        alert.informativeText = "Edition not implemented yet"
-                        alert.messageText = "name : \(config.name) \n host: \(config.host) \n port: \(config.port) \n Connected: \(config.isConnected)"
-                        alert.addButton(withTitle: "Roger that.")
-                        alert.alertStyle = .informational
-                        alert.runModal()
+                        Utils.alert(message: "Edition not implmented yet", type: .warning, informativeText: config.toJsonStr())
                     }
             }
             HStack {

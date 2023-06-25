@@ -68,10 +68,20 @@ struct ConfigForm: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
-            Button("Save") {
-                saveConfiguration()
+            HStack {
+                Button(action: {
+                    saveConfiguration()
+                }) {
+                    Label("Save", systemImage: "opticaldiscdrive.fill")
+                }
+                .padding()
+                Button(action: {
+                    self.isPresented = false
+                }) {
+                    Label("Cancel", systemImage: "trash")
+                }
+                .padding()
             }
-            .padding()
         }
         .padding()
     }
