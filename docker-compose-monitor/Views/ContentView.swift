@@ -33,8 +33,8 @@ struct ContentView: View {
                     }
                     .padding()
                     Divider()
-                    ScrollView(.vertical) {
-                        GeometryReader { scrollGeometry in
+                    GeometryReader { scrollGeometry in
+                        ScrollView(.vertical) {
                             VStack (spacing: 5) {
                                 if configs.count > 0 {
                                     ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
