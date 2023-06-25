@@ -12,7 +12,6 @@ struct ContainerCard: View {
     @State var config: Config
     @Binding var container: Container
     @State var displayLogs: Bool = false
-    @State var status: String = ""
         
     var body: some View {
         VStack {
@@ -45,7 +44,7 @@ struct ContainerCard: View {
             }
             .padding()
                     
-            Text(status)
+            Text(container.status.rawValue)
                 .font(.subheadline)
                 .foregroundColor(.black)
                 .padding(.bottom)
@@ -55,9 +54,6 @@ struct ContainerCard: View {
         .frame(width: SIZES.CONTAINER_CARD_WIDTH.rawValue)
         .fixedSize(horizontal: false, vertical: true)
         .padding()
-        .onAppear {
-            status = container.status.rawValue
-        }
     }
     
     private func runAction() -> Void {
@@ -79,7 +75,6 @@ struct ContainerCard: View {
     }
     
     private func pullAction() -> Void {
-        status = ContainerStatus.PULLING.rawValue
         let alert = NSAlert()
         do {
             alert.messageText = try SSHService.dockerPull(of: config, _for: container)
@@ -89,7 +84,6 @@ struct ContainerCard: View {
         alert.addButton(withTitle: "Roger.")
         alert.alertStyle = .informational
         alert.runModal()
-        status = container.status.rawValue
     }
     
     private func showLogs() -> Void {
