@@ -37,6 +37,9 @@ struct ContentView: View {
                     .sheet(isPresented: $isConfigFormPresented) {
                         ConfigForm(isPresented: $isConfigFormPresented)
                             .frame(width: 400)
+                            .onDisappear {
+                                configs = ConfigParserService.fetchConfigs()
+                            }
                     }
                     Divider()
                     GeometryReader { scrollGeometry in
