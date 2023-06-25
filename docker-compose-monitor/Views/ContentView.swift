@@ -90,41 +90,44 @@ struct ContentView: View {
                     ScrollView([.horizontal, .vertical]) {
                         if selectedConfig != nil {
                             if selectedConfig!.connectionStatus == .CONNECTED {
-                                // TODO: Fix when selecting another config with differents columns count displays bad count of containers
-                                let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
-                                VStack {
-                                    ForEach(0..<rows, id: \.self) { row in
-                                        HStack(spacing: spacing) {
-                                            ForEach(0..<columns, id: \.self) { column in
-                                                let index = row * columns + column
-                                                if let config = selectedConfig {
-                                                    let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
-                                                    if index < selectedConfig!.containers.count {
-                                                        ContainerCard(config: selectedConfig!, container: _containers[index])
+                                if (isLoading) {
+                                    Text("Loading...")
+                                } else {
+                                    let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
+                                    VStack {
+                                        ForEach(0..<rows, id: \.self) { row in
+                                            HStack(spacing: spacing) {
+                                                ForEach(0..<columns, id: \.self) { column in
+                                                    let index = row * columns + column
+                                                    if let config = selectedConfig {
+                                                        if index < selectedConfig!.containers.count {
+                                                            let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                            ContainerCard(config: selectedConfig!, container: _containers[index])
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                    .onReceive(timer) { _ in
+                                        if selectedConfig != nil {
+                                            if selectedConfig!.connectionStatus == .CONNECTED {
+                                                DispatchQueue.global(qos: .utility).async {
+                                                    let _containers = fetchContainersState(for: selectedConfig!)
+                                                    if searchFilter.count == 0 {
+                                                        selectedConfig?.containers = _containers
+                                                        containers = selectedConfig?.containers ?? []
+                                                    } else {
+                                                        let containerSelected = _containers.first(where: {$0.name == selectedConfig?.containers[0].name})!
+                                                        selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .onReceive(timer) { _ in
-                                    if selectedConfig != nil {
-                                        if selectedConfig!.connectionStatus == .CONNECTED {
-                                            DispatchQueue.global(qos: .utility).async {
-                                                let _containers = fetchContainersState(for: selectedConfig!)
-                                                if searchFilter.count == 0 {
-                                                    selectedConfig?.containers = _containers
-                                                    containers = selectedConfig?.containers ?? []
-                                                } else {
-                                                    let containerSelected = _containers.first(where: {$0.name == selectedConfig?.containers[0].name})!
-                                                    selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                .frame(maxWidth: .infinity)
                             } else {
                                 Text("Not connected")
                             }
@@ -137,7 +140,7 @@ struct ContentView: View {
                         containerGeometryProxy = rightGeometry
                     }
                     .searchable(text: $searchFilter) {
-                        ForEach(containers) { container in
+                        ForEach(selectedConfig?.containers ?? []) { container in
                             if container.name.contains(searchFilter) {
                                 Text(container.name)
                                     .onTapGesture {
@@ -192,9 +195,17 @@ struct ContentView: View {
             selectedConfig = nil
             return
         }
+        for i in 0..<configs.count {
+            if configs[i].id == config.id {
+                configs[i].isSelected = true
+                continue
+            }
+            configs[i].isSelected = false
+        }
         selectedConfig = config
         selectedConfig?.containers = []
-        print(config.name, selectedConfig!.name)
+        selectedConfig?.isSelected = true
+        isLoading = false
     }
     
     private func toggleConnection(for config: Config) -> Void {
