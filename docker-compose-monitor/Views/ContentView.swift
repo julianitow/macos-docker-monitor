@@ -21,6 +21,8 @@ struct ContentView: View {
     @State var containerGeometryProxy: GeometryProxy? = nil
     @State var searchFilter: String = ""
     
+    @State private var isConfigFormPresented: Bool = false
+    
     private let sshService = SSHService.self
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
@@ -32,6 +34,9 @@ struct ContentView: View {
                             Label("Add config", systemImage: "folder.badge.plus")
                     }
                     .padding()
+                    .sheet(isPresented: $isConfigFormPresented) {
+                        ConfigForm(isPresented: $isConfigFormPresented)
+                    }
                     Divider()
                     GeometryReader { scrollGeometry in
                         ScrollView(.vertical) {
@@ -156,10 +161,11 @@ struct ContentView: View {
     
     private func addConfig() -> Void {
         // TODO: display a window to add a ne config
-        let alert = NSAlert()
+        isConfigFormPresented = true
+        /*let alert = NSAlert()
         alert.messageText = "Not implemented yet"
         alert.informativeText = "Edition from GUI not done yet, WIP, please edit configuration file directory"
-        alert.runModal()
+        alert.runModal()*/
     }
     
     private func toggleSelection(for config: Config) -> Void {

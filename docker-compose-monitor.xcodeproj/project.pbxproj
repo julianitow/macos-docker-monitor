@@ -17,6 +17,8 @@
 		EFD29BA82A47703D000694D5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA72A47703D000694D5 /* Constants.swift */; };
 		EFD29BAA2A47A908000694D5 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD29BA92A47A908000694D5 /* Utils.swift */; };
 		EFD498EF2A483C7000F8CE73 /* MockSSHService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD498EE2A483C7000F8CE73 /* MockSSHService.swift */; };
+		EFD498F22A485A9600F8CE73 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD498F12A485A9600F8CE73 /* FileService.swift */; };
+		EFD498F42A485CE400F8CE73 /* ConfigForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD498F32A485CE400F8CE73 /* ConfigForm.swift */; };
 		EFE6AEC92A46E63000D44F0D /* docker_compose_monitorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AEC82A46E63000D44F0D /* docker_compose_monitorApp.swift */; };
 		EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE6AECA2A46E63000D44F0D /* ContentView.swift */; };
 		EFE6AECD2A46E63100D44F0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE6AECC2A46E63100D44F0D /* Assets.xcassets */; };
@@ -40,6 +42,8 @@
 		EFD29BA72A47703D000694D5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EFD29BA92A47A908000694D5 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		EFD498EE2A483C7000F8CE73 /* MockSSHService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSSHService.swift; sourceTree = "<group>"; };
+		EFD498F12A485A9600F8CE73 /* FileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileService.swift; sourceTree = "<group>"; };
+		EFD498F32A485CE400F8CE73 /* ConfigForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigForm.swift; sourceTree = "<group>"; };
 		EFE6AEC52A46E63000D44F0D /* docker-compose-monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "docker-compose-monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFE6AEC82A46E63000D44F0D /* docker_compose_monitorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = docker_compose_monitorApp.swift; sourceTree = "<group>"; };
 		EFE6AECA2A46E63000D44F0D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -135,6 +139,7 @@
 				EFD29B982A47352C000694D5 /* ConfigParserService.swift */,
 				EFD29B9A2A474213000694D5 /* SSHService.swift */,
 				EFD29B9F2A474A78000694D5 /* OutputParser.swift */,
+				EFD498F12A485A9600F8CE73 /* FileService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -147,6 +152,7 @@
 				EFE6AEE62A46F91000D44F0D /* ContainerCard.swift */,
 				EFE6AECA2A46E63000D44F0D /* ContentView.swift */,
 				EFD29BA32A4761FE000694D5 /* ContainerOutput.swift */,
+				EFD498F32A485CE400F8CE73 /* ConfigForm.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -237,6 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFD29BA42A4761FE000694D5 /* ContainerOutput.swift in Sources */,
+				EFD498F22A485A9600F8CE73 /* FileService.swift in Sources */,
 				EFE6AED82A46E72000D44F0D /* Card.swift in Sources */,
 				EFD29BA62A476298000694D5 /* View.swift in Sources */,
 				EFE6AECB2A46E63000D44F0D /* ContentView.swift in Sources */,
@@ -244,6 +251,7 @@
 				EFE6AEC92A46E63000D44F0D /* docker_compose_monitorApp.swift in Sources */,
 				EFE6AEE92A46F91F00D44F0D /* ContainerModel.swift in Sources */,
 				EFE6AEE42A46EAD200D44F0D /* MockConfigService.swift in Sources */,
+				EFD498F42A485CE400F8CE73 /* ConfigForm.swift in Sources */,
 				EFD29BA82A47703D000694D5 /* Constants.swift in Sources */,
 				EFE6AEDE2A46E97400D44F0D /* ConfigCard.swift in Sources */,
 				EFD29BAA2A47A908000694D5 /* Utils.swift in Sources */,

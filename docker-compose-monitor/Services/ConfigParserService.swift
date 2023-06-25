@@ -12,31 +12,9 @@ class ConfigParserService {
     static let dirPath = "\(NSHomeDirectory())/.docker-inspector"
     static let configPath = "\(dirPath)/config.json"
     
-    private static let fileManager = FileManager.default
-    
-    static func fileExists() -> Bool {
-        return fileManager.fileExists(atPath: configPath)
-    }
-    
-    static func directoryExists() -> Bool {
-        var isDirectory:ObjCBool = true
-        return fileManager.fileExists(atPath: dirPath, isDirectory: &isDirectory)
-    }
-    
-    static func createFile() -> Void {
-        let dirUrl = URL(fileURLWithPath: dirPath)
-        do {
-            try fileManager.createDirectory(at: dirUrl, withIntermediateDirectories: false)
-            fileManager.createFile(atPath: configPath, contents: "{ \n\t\"configs\": []\n}\n".data(using: .utf8))
-        } catch {
-            Utils.alertError(error: error)
-            print("\(error)")
-        }
-    }
-    
     static func fetchConfigs() -> Array<Config> {
-        if (!fileExists()) {
-            createFile()
+        if (!FileService.fileExists(configPath)) {
+            FileService.createFile(dirPath: dirPath, filePath: configPath, withContent: "{ \n\t\"configs\": []\n}\n")
         }
         let path = URL(fileURLWithPath: configPath)
         do {
@@ -47,6 +25,11 @@ class ConfigParserService {
             print("Erreur lors de la lecture du fichier : \(error)")
         }
         return []
+    }
+    
+    //TODO: throws error
+    static func addConfig(config: Config) -> Void {
+        print(config.toJsonStr())
     }
     
     private static func parseData(_ content: String) -> Array<Config> {
