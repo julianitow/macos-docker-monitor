@@ -22,6 +22,7 @@ class MockSSHService {
     }
     
     static func dockerRun(of: Config, _for: Container) throws -> Bool {
+        throw ParsingError.InvalidDictionnary
         return true
     }
     

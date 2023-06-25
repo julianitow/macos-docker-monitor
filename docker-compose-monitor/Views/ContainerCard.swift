@@ -12,6 +12,10 @@ struct ContainerCard: View {
     @State var config: Config
     @Binding var container: Container
     @State var displayLogs: Bool = false
+    
+    @State private var isPulling = false
+    @State private var isStarting = false
+    @State private var isStopping = false
         
     var body: some View {
         VStack {
@@ -27,16 +31,22 @@ struct ContainerCard: View {
             Spacer()
             
             HStack {
-                Button(action: runAction) {
-                    Label("Run", systemImage: "play.fill")
+                Button(action: {
+                    runAction()
+                }) {
+                    Label("Run", systemImage: isStarting ? "circle.dotted" : "play.fill")
                 }
                 .disabled(container.status == .RUNNING)
-                Button(action: stopAction) {
-                    Label("Stop", systemImage: "stop.fill")
+                Button(action: {
+                    stopAction()
+                }) {
+                    Label("Stop", systemImage: isStopping ? "circle.dotted" : "stop.fill")
                 }
                 .disabled(container.status == .STOPPED)
-                Button(action: pullAction) {
-                    Label("Pull", systemImage: "square.and.arrow.down.fill")
+                Button(action: {
+                    pullAction()
+                }) {
+                    Label("Pull", systemImage: isPulling ? "circle.dotted" : "square.and.arrow.down.fill")
                 }
                 Button(action: showLogs) {
                     Label("Show logs", systemImage: "play.display")
@@ -57,33 +67,53 @@ struct ContainerCard: View {
     }
     
     private func runAction() -> Void {
-        DispatchQueue.main.async {
+        isStarting = true
+        DispatchQueue.global(qos: .utility).async {
             do {
                 let _ = try SSHService.dockerRun(of: config, _for: container)
             } catch {
-                Utils.alertError(error: error)
+                DispatchQueue.main.async {
+                    Utils.alertError(error: error)
+                    isStarting = false
+                }
             }
         }
     }
     
     private func stopAction() -> Void {
-        do {
-            let _ = try SSHService.dockerStop(of: config, _for: container)
-        } catch {
-            Utils.alertError(error: error)
+        isStopping = true
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                let _ = try SSHService.dockerStop(of: config, _for: container)
+            } catch {
+                DispatchQueue.main.async {
+                    Utils.alertError(error: error)
+                    isStopping = false
+                }
+            }
+            isStopping = false
         }
     }
     
     private func pullAction() -> Void {
+        isPulling = true
         let alert = NSAlert()
-        do {
-            alert.messageText = try SSHService.dockerPull(of: config, _for: container)
-        } catch {
-            Utils.alertError(error: error)
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                alert.messageText = try SSHService.dockerPull(of: config, _for: container)
+            } catch {
+                DispatchQueue.main.async {
+                    Utils.alertError(error: error)
+                    isPulling = false
+                }
+            }
+            DispatchQueue.main.async {
+                alert.addButton(withTitle: "Roger.")
+                alert.alertStyle = .informational
+                alert.runModal()
+                isPulling = false
+            }
         }
-        alert.addButton(withTitle: "Roger.")
-        alert.alertStyle = .informational
-        alert.runModal()
     }
     
     private func showLogs() -> Void {
