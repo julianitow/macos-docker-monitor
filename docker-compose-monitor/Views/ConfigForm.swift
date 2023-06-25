@@ -10,6 +10,7 @@ import SwiftUI
 struct ConfigForm: View {
     
     @Binding var isPresented: Bool
+    @Binding var updatedConfig: Bool
     @State private var name: String = ""
     @State private var host: String = ""
     @State private var username: String = ""
@@ -71,12 +72,14 @@ struct ConfigForm: View {
             HStack {
                 Button(action: {
                     saveConfiguration()
+                    self.updatedConfig = true
                 }) {
                     Label("Save", systemImage: "opticaldiscdrive.fill")
                 }
                 .padding()
                 Button(action: {
                     self.isPresented = false
+                    self.updatedConfig = false
                 }) {
                     Label("Cancel", systemImage: "trash")
                 }
@@ -121,6 +124,7 @@ struct ConfigForm_Previews: PreviewProvider {
     static var previews: some View {
         var _isPresented = false
         var isPresented = Binding { _isPresented } set: { _isPresented = $0 }
-        ConfigForm(isPresented: isPresented)
+        var newConfig = Binding { _isPresented } set: { _isPresented = $0 }
+        ConfigForm(isPresented: isPresented, updatedConfig: newConfig)
     }
 }

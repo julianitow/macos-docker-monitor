@@ -22,6 +22,7 @@ struct ContentView: View {
     @State var searchFilter: String = ""
     
     @State private var isConfigFormPresented: Bool = false
+    @State private var newConfig = false
     @State private var isLoading = false
     
     private let sshService = SSHService.self
@@ -36,10 +37,12 @@ struct ContentView: View {
                     }
                     .padding()
                     .sheet(isPresented: $isConfigFormPresented) {
-                        ConfigForm(isPresented: $isConfigFormPresented)
+                        ConfigForm(isPresented: $isConfigFormPresented, updatedConfig: $newConfig)
                             .frame(width: 400)
                             .onDisappear {
-                                configs = ConfigParserService.fetchConfigs()
+                                if newConfig {
+                                    configs = ConfigParserService.fetchConfigs()
+                                }
                             }
                     }
                     Divider()
