@@ -203,16 +203,25 @@ struct ContentView: View {
     }
     
     private func toggleConnection(for config: Config) -> Void {
-        if let index = configs.firstIndex(where: { $0.id == config.id }) {
-            if connect(to: config) {
-                do {
-                    let containers = try sshService.fetchContainers(of: config)
-                    configs[index].containers = containers!
-                    self.containers = configs[index].containers
-                    configs[index].isConnected.toggle()
-                    self.toggleSelection(for: configs[index])
-                } catch {
-                    Utils.alertError(error: error)
+        DispatchQueue.global(qos: .utility).async {
+            if let index = configs.firstIndex(where: { $0.id == config.id }) {
+                configs[index].connectionStatus = .CONNECTING
+                if connect(to: config) {
+                    do {
+                        let containers = try sshService.fetchContainers(of: config)
+                        configs[index].containers = containers!
+                        self.containers = configs[index].containers
+                        configs[index].isConnected.toggle()
+                        configs[index].connectionStatus = .CONNECTED
+                        //self.toggleSelection(for: configs[index])
+                    } catch {
+                        DispatchQueue.main.async {
+                            Utils.alertError(error: error)
+
+                        }
+                    }
+                } else {
+                    configs[index].connectionStatus = .ERROR
                 }
             }
         }
@@ -222,7 +231,9 @@ struct ContentView: View {
         do {
             return try sshService.connect(to: config)
         } catch {
-            Utils.alertError(error: error)
+            DispatchQueue.main.async {
+                Utils.alertError(error: error)
+            }
         }
         return false
     }

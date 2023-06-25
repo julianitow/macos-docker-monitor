@@ -14,7 +14,8 @@ struct ConfigCard: View {
     var body: some View {
         VStack (alignment: .leading) {
             HStack {
-                Image(systemName: config.isConnected ? "point.3.filled.connected.trianglepath.dotted": "point.3.connected.trianglepath.dotted")
+                Image(systemName: config.connectionStatus != .CONNECTED ?
+                      "point.3.filled.connected.trianglepath.dotted": "point.3.connected.trianglepath.dotted")
                 Text(config.name.uppercased())
                     .font(.title)
                     .fontWeight(.bold)
@@ -26,7 +27,7 @@ struct ConfigCard: View {
                     .foregroundColor(.black)
                     .padding()
                     .onTapGesture {
-                        Utils.alert(message: "Edition not implmented yet", type: .warning, informativeText: config.toJsonStr())
+                        Utils.alert(message: "Edition not implemented yet", type: .warning, informativeText: config.toJsonStr())
                     }
             }
             HStack {
@@ -35,9 +36,15 @@ struct ConfigCard: View {
                     .foregroundColor(.black)
                     .padding(.horizontal)
                     .padding(.bottom)
+                
+                Text(config.connectionStatus.rawValue)
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .padding(.horizontal)
+                    .padding(.bottom)
             }
         }
-        .background(config.isSelected ? .blue : config.isConnected ? Color(hex: "#2ecc71") : Color(hex: "#95a5a6"))
+        .background(config.isSelected ? .blue : config.connectionStatus == .CONNECTED ? Color(hex: "#2ecc71") : config.connectionStatus == .ERROR ? Color(hex: "#c0392b") : Color(hex: "#95a5a6"))
         .cornerRadius(10)
         .fixedSize(horizontal: false, vertical: true)
         .frame(width: geometryProxy.size.width - 30)

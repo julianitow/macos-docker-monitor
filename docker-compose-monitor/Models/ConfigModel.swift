@@ -7,6 +7,13 @@
 
 import Foundation
 
+enum ConnectionStatus: String {
+    case ERROR = "Connection error"
+    case CONNECTING = "Connecting"
+    case CONNECTED = "Connected"
+    case DISCONNECTED = "Disconnected"
+}
+
 struct Config: Identifiable {
     var id = UUID() //identifiable
     let name: String
@@ -18,6 +25,7 @@ struct Config: Identifiable {
     var isConnected: Bool = false
     var isSelected: Bool = false
     var containers: Array<Container>
+    var connectionStatus: ConnectionStatus = .DISCONNECTED
     
     static func fromJson(json: [String: Any]) throws -> Config {
         guard let name = json["name"] as? String,
