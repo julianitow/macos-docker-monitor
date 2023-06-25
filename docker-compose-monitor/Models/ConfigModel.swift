@@ -31,7 +31,10 @@ struct Config: Identifiable {
         return Config(name: name, host: host, username: username, publicKey: publickey, privateKey: privateKey, containers: [])
     }
     
-    func toJsonStr() -> String {
+    func toJsonStr(withTabs: Bool = false) -> String {
+        if withTabs {
+            return "\t{\n \t\t\"name\": \"\(self.name)\",\n \t\t\"host\": \"\(self.host)\",\n \t\t\"username\": \"\(self.username)\",\n \t\t\"publicKey\": \"\(self.publicKey)\",\n \t\t\"privateKey\": \"\(self.privateKey)\",\n \t\t\"port\": \(self.port)\n\t}"
+        }
         return "{\n \"name\": \"\(self.name)\",\n \"host\": \"\(self.host)\",\n \"username\": \"\(self.username)\",\n \"publicKey\": \"\(self.publicKey)\",\n \"privateKey\": \"\(self.privateKey)\",\n \"port\": \(self.port)\n}"
     }
 }

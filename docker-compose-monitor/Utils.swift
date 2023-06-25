@@ -16,4 +16,12 @@ class Utils {
         alert.informativeText = "Sorry"
         alert.runModal()
     }
+    
+    static func alert(message: String, type: NSAlert.Style, informativeText: String?) -> Void {
+        let alert = NSAlert()
+        alert.alertStyle = type
+        alert.messageText = message
+        alert.informativeText = (informativeText != nil) ? informativeText! : "Sorry"
+        alert.runModal()
+    }
 }

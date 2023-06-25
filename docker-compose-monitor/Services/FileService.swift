@@ -29,4 +29,21 @@ class FileService {
             print("\(error)")
         }
     }
+    
+    static func readFile(filePath: String) throws -> String {
+        let path = URL(fileURLWithPath: filePath)
+        do {
+            return try String(contentsOf: path)
+        } catch {
+            throw error
+        }
+    }
+    
+    static func writeToFile(filePath: String, content: String) throws -> Void {
+        do {
+            try content.write(toFile: filePath, atomically: true, encoding: .utf8)
+        } catch {
+            throw error
+        }
+    }
 }

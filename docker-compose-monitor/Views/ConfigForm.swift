@@ -101,7 +101,7 @@ struct ConfigForm: View {
     }
     
     private func saveConfiguration() {
-        let config = Config(name: name, host: host, username: username, publicKey: privateKey, privateKey: publicKey, containers: [])
+        let config = Config(name: name, host: host, username: username, publicKey: publicKey, privateKey: privateKey, containers: [])
         ConfigParserService.addConfig(config: config)
         isPresented = false
     }
