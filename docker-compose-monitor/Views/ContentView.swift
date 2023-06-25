@@ -32,14 +32,19 @@ struct ContentView: View {
                     ScrollView(.vertical) {
                         GeometryReader { scrollGeometry in
                             VStack (spacing: 5) {
-                                ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
-                                    ConfigCard(config: $configs[index], geometryProxy: scrollGeometry)
-                                        .gesture(TapGesture(count: 2).onEnded { gesture in
-                                            toggleConnection(for: config)
-                                        })
-                                        .gesture(TapGesture(count: 1).onEnded {
-                                            toggleSelection(for: config)
-                                        })
+                                if configs.count > 0 {
+                                    ForEach(Array(configs.enumerated()), id: \.element.id) { (index, config) in
+                                        ConfigCard(config: $configs[index], geometryProxy: scrollGeometry)
+                                            .gesture(TapGesture(count: 2).onEnded { gesture in
+                                                toggleConnection(for: config)
+                                            })
+                                            .gesture(TapGesture(count: 1).onEnded {
+                                                toggleSelection(for: config)
+                                            })
+                                    }
+                                } else {
+                                    Text("No configuration found. \n Please edit config file (located in \n $HOME/.docker-inspector/config.json) and add configurations, ex:\n { \n \"name\": ..., \n \"host\": ...\n \"username\": ...,\n \"port\": 22,\n \"publicKey\": \"path_to_file\",\n \"privateKey\": \"path_to_file\",\n }")
+                                        .frame(width: scrollGeometry.size.width, height: 500)
                                 }
                             }
                             .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
@@ -122,7 +127,10 @@ struct ContentView: View {
     
     private func addConfig() -> Void {
         // TODO: display a window to add a ne config
-        print("WIP")
+        let alert = NSAlert()
+        alert.messageText = "Not implemented yet"
+        alert.informativeText = "Edition from GUI not done yet, WIP, please edit configuration file directory"
+        alert.runModal()
     }
     
     private func toggleSelection(for config: Config) -> Void {
