@@ -94,7 +94,7 @@ struct ContentView: View {
                                 VStack {
                                     ForEach(0..<rows) { row in
                                         HStack(spacing: spacing) {
-                                            ForEach(0..<columns) { column in
+                                            ForEach(0..<columns, id: \.self) { column in
                                                 let index = row * columns + column
                                                 if index < selectedConfig!.containers.count {
                                                     if let config = selectedConfig {
