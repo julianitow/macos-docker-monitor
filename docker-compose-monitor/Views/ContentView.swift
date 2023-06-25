@@ -88,7 +88,7 @@ struct ContentView: View {
                     let spacing: CGFloat = 1
                     ScrollView([.horizontal, .vertical]) {
                         if selectedConfig != nil {
-                            if selectedConfig!.isConnected {
+                            if selectedConfig!.connectionStatus == .CONNECTED {
                                 // TODO: Fix when selecting another config with differents columns count displays bad count of containers
                                 let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
                                 VStack {
@@ -109,7 +109,7 @@ struct ContentView: View {
                                 }
                                 .onReceive(timer) { _ in
                                     if selectedConfig != nil {
-                                        if selectedConfig!.isConnected {
+                                        if selectedConfig!.connectionStatus == .CONNECTED {
                                             DispatchQueue.global(qos: .utility).async {
                                                 let _containers = fetchContainersState(for: selectedConfig!)
                                                 if searchFilter.count == 0 {
@@ -205,19 +205,21 @@ struct ContentView: View {
     private func toggleConnection(for config: Config) -> Void {
         DispatchQueue.global(qos: .utility).async {
             if let index = configs.firstIndex(where: { $0.id == config.id }) {
+                if config.connectionStatus == .CONNECTED {
+                    configs[index].connectionStatus = .DISCONNECTED
+                    return
+                }
                 configs[index].connectionStatus = .CONNECTING
                 if connect(to: config) {
                     do {
                         let containers = try sshService.fetchContainers(of: config)
                         configs[index].containers = containers!
                         self.containers = configs[index].containers
-                        configs[index].isConnected.toggle()
                         configs[index].connectionStatus = .CONNECTED
-                        //self.toggleSelection(for: configs[index])
+                        self.toggleSelection(for: configs[index])
                     } catch {
                         DispatchQueue.main.async {
                             Utils.alertError(error: error)
-
                         }
                     }
                 } else {

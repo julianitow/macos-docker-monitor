@@ -22,7 +22,6 @@ struct Config: Identifiable {
     let publicKey: String
     let privateKey: String
     var port: Int = 22
-    var isConnected: Bool = false
     var isSelected: Bool = false
     var containers: Array<Container>
     var connectionStatus: ConnectionStatus = .DISCONNECTED
