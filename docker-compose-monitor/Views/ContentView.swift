@@ -36,6 +36,7 @@ struct ContentView: View {
                     .padding()
                     .sheet(isPresented: $isConfigFormPresented) {
                         ConfigForm(isPresented: $isConfigFormPresented)
+                            .frame(width: 400)
                     }
                     Divider()
                     GeometryReader { scrollGeometry in
@@ -85,10 +86,10 @@ struct ContentView: View {
                     ScrollView([.horizontal, .vertical]) {
                         if selectedConfig != nil {
                             if selectedConfig!.isConnected {
-                                let rows = 5
-                                @State var columns = ((selectedConfig?.containers.count)! + rows - 1) / rows
+                                // TODO: Fix when selecting another config with differents columns count displays bad count of containers
+                                let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
                                 VStack {
-                                    ForEach(0..<INTEGERS.CONTAINER_ROW_COUNT.rawValue) { row in
+                                    ForEach(0..<rows) { row in
                                         HStack(spacing: spacing) {
                                             ForEach(0..<columns) { column in
                                                 let index = row * columns + column
@@ -151,6 +152,10 @@ struct ContentView: View {
         }
     }
     
+    private var columns: Int {
+        return ((selectedConfig?.containers.count)! + INTEGERS.CONTAINER_ROW_COUNT.rawValue - 1) / INTEGERS.CONTAINER_ROW_COUNT.rawValue
+    }
+    
     private func getContainerCardIndex(row: Int, column: Int, rows: Int) -> Int? {
         if selectedConfig == nil {
             return nil
@@ -168,19 +173,6 @@ struct ContentView: View {
         alert.runModal()*/
     }
     
-    private func toggleSelection(for config: Config) -> Void {
-        self.selectedConfig?.containers = []
-        for i in 0..<configs.count {
-            if config.id == configs[i].id {
-                configs[i].isSelected.toggle()
-                self.selectedConfig = configs[i]
-                self.containers = configs[i].containers
-            } else {
-                configs[i].isSelected = false
-            }
-        }
-    }
-    
     private func fetchContainersState(for config: Config) -> Array<Container> {
         if configs.firstIndex(where: { $0.id == config.id }) != nil {
             if connect(to: config) {
@@ -192,6 +184,19 @@ struct ContentView: View {
             }
         }
         return []
+    }
+    
+    private func toggleSelection(for config: Config) -> Void {
+        self.selectedConfig?.containers = []
+        for i in 0..<configs.count {
+            if config.id == configs[i].id {
+                configs[i].isSelected.toggle()
+                self.selectedConfig = configs[i]
+                self.containers = configs[i].containers
+            } else {
+                configs[i].isSelected = false
+            }
+        }
     }
     
     private func toggleConnection(for config: Config) -> Void {

@@ -20,7 +20,7 @@ struct ConfigForm: View {
     
     var body: some View {
         VStack {
-            Text("Configuration")
+            Text("New configuration")
                 .font(.title)
                 .padding()
             
