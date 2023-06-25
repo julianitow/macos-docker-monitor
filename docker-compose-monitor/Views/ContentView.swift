@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var configs = ConfigParserService.fetchConfigs()
+    @State var configs = MockedData.fetchConfigs()
     @State var selectedConfig: Config?
     @State var containers: Array<Container> = []
     
@@ -18,6 +18,9 @@ struct ContentView: View {
     @State private var isCardOpened = false
     @State private var openedCardIndex = 0
     
+    @State var containerGeometryProxy: GeometryProxy? = nil
+    
+    private let sshService = MockSSHService.self
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -72,7 +75,7 @@ struct ContentView: View {
                             }
                     )
                 GeometryReader { rightGeometry in
-                    let spacing: CGFloat = 1 // Espacement entre les éléments
+                    let spacing: CGFloat = 1
                     ScrollView([.horizontal, .vertical]) {
                         if selectedConfig != nil {
                             if selectedConfig!.isConnected {
@@ -112,6 +115,9 @@ struct ContentView: View {
                         }
                     }
                     .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
+                    .onAppear {
+                        containerGeometryProxy = rightGeometry
+                    }
                 }
             }
         }
@@ -147,10 +153,10 @@ struct ContentView: View {
     }
     
     private func fetchContainersState(for config: Config) -> Array<Container> {
-        if let index = configs.firstIndex(where: { $0.id == config.id }) {
+        if configs.firstIndex(where: { $0.id == config.id }) != nil {
             if connect(to: config) {
                 do {
-                    return try SSHService.fetchContainers(of: config)!
+                    return try sshService.fetchContainers(of: config)!
                 } catch {
                     Utils.alertError(error: error)
                 }
@@ -163,7 +169,7 @@ struct ContentView: View {
         if let index = configs.firstIndex(where: { $0.id == config.id }) {
             if connect(to: config) {
                 do {
-                    let containers = try SSHService.fetchContainers(of: config)
+                    let containers = try sshService.fetchContainers(of: config)
                     configs[index].containers = containers!
                     self.containers = configs[index].containers
                     configs[index].isConnected.toggle()
@@ -177,7 +183,7 @@ struct ContentView: View {
     
     private func connect(to config: Config) -> Bool {
         do {
-            return try SSHService.connect(to: config)
+            return try sshService.connect(to: config)
         } catch {
             Utils.alertError(error: error)
         }
