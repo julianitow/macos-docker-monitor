@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var configs = MockedData.fetchConfigs()
+    @State var configs = ConfigParserService.fetchConfigs()
     @State var selectedConfig: Config?
     @State var containers: Array<Container> = []
     
@@ -19,8 +19,9 @@ struct ContentView: View {
     @State private var openedCardIndex = 0
     
     @State var containerGeometryProxy: GeometryProxy? = nil
+    @State var searchFilter: String = ""
     
-    private let sshService = MockSSHService.self
+    private let sshService = SSHService.self
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -82,14 +83,14 @@ struct ContentView: View {
                                 let rows = 5
                                 @State var columns = ((selectedConfig?.containers.count)! + rows - 1) / rows
                                 VStack {
-                                    ForEach(0..<rows) { row in
+                                    ForEach(0..<INTEGERS.CONTAINER_ROW_COUNT.rawValue) { row in
                                         HStack(spacing: spacing) {
                                             ForEach(0..<columns) { column in
                                                 let index = row * columns + column
                                                 if index < selectedConfig!.containers.count {
                                                     if let config = selectedConfig {
-                                                        let containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
-                                                        ContainerCard(config: selectedConfig!, container: containers[index])
+                                                        let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                        ContainerCard(config: selectedConfig!, container: _containers[index])
                                                     }
                                                 }
                                             }
@@ -101,7 +102,14 @@ struct ContentView: View {
                                     if selectedConfig != nil {
                                         if selectedConfig!.isConnected {
                                             DispatchQueue.global(qos: .utility).async {
-                                                selectedConfig!.containers = fetchContainersState(for: selectedConfig!)
+                                                let _containers = fetchContainersState(for: selectedConfig!)
+                                                if searchFilter.count == 0 {
+                                                    selectedConfig!.containers = _containers
+                                                    containers = selectedConfig!.containers
+                                                } else {
+                                                    let containerSelected = _containers.first(where: {$0.name == selectedConfig?.containers[0].name})!
+                                                    selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
+                                                }
                                             }
                                         }
                                     }
@@ -117,6 +125,21 @@ struct ContentView: View {
                     .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
                     .onAppear {
                         containerGeometryProxy = rightGeometry
+                    }
+                    .searchable(text: $searchFilter) {
+                        ForEach(containers) { container in
+                            if container.name.contains(searchFilter) {
+                                Text(container.name)
+                                    .onTapGesture {
+                                        selectedConfig?.containers = [container]
+                                    }
+                            }
+                        }
+                    }
+                    .onChange(of: searchFilter) { _ in
+                        if searchFilter.count == 0 {
+                            selectedConfig?.containers = containers
+                        }
                     }
                 }
             }

@@ -14,3 +14,7 @@ enum SIZES: CGFloat {
 enum COLORS_HEX: String {
     case BLACK_BACKGROUND = "#1e1e1e"
 }
+
+enum INTEGERS: Int {
+    case CONTAINER_ROW_COUNT = 5
+}
