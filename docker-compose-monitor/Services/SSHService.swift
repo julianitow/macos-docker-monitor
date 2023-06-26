@@ -10,6 +10,7 @@ import Shout
 
 enum DOCKER_COMMANDS: String {
     case DOCKER_PS_ALL = "docker ps -a --format json | jq -s"
+    case DOCKER_PS_ALL_NO_JQ = "docker ps -a --format='{{json .}}' | sed '$!s/$/,/'"
     case DOCKER_LOGS = "docker logs -t --tail 100 "
     case DOCKER_STOP = "docker stop "
     case DOCKER_START = "docker start "
@@ -37,7 +38,13 @@ class SSHService {
             return nil
         }
         do {
-            let (_, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS_ALL.rawValue)
+            var (status, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS_ALL.rawValue)
+            if status != 0 {
+                (status, output) = try session.capture(DOCKER_COMMANDS.DOCKER_PS_ALL_NO_JQ.rawValue)
+                if status == 0 {
+                   output = "[\(output)]"
+                }
+            }
             return OutputParser.parseDockerPStoContainer(output: output)
         } catch {
             print("\(error)")
