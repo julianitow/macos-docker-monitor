@@ -11,6 +11,7 @@ struct ContentView: View {
     @State var configs = ConfigParserService.fetchConfigs()
     @State var selectedConfig: Config?
     @State var containers: Array<Container> = []
+    @State var selectedContainer: Container?
     
     @State private var firstColumnWidth: CGFloat = 0.2
     @State private var dragOffset: CGFloat = 0.0
@@ -122,7 +123,7 @@ struct ContentView: View {
                                                         selectedConfig?.containers = _containers
                                                         containers = selectedConfig?.containers ?? []
                                                     } else {
-                                                        let containerSelected = _containers.first(where: {$0.name == selectedConfig?.containers[0].name})!
+                                                        let containerSelected = _containers.first(where: {$0.name == selectedContainer!.name})!
                                                         selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
                                                     }
                                                 }
@@ -148,6 +149,7 @@ struct ContentView: View {
                                 Text(container.name)
                                     .onTapGesture {
                                         selectedConfig?.containers = [container]
+                                        selectedContainer = container
                                     }
                             }
                         }
