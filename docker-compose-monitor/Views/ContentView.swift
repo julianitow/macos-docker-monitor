@@ -89,77 +89,88 @@ struct ContentView: View {
                                 firstColumnWidth = max(min(newFirstColumnWidth, maxColumnWidth), minColumnWidth)
                             }
                     )
-                GeometryReader { rightGeometry in
-                    let spacing: CGFloat = 1
-                    ScrollView([.horizontal, .vertical]) {
-                        if selectedConfig != nil {
-                            if selectedConfig!.connectionStatus == .CONNECTED {
-                                if (isLoading) {
-                                    Text("Loading...")
-                                } else {
-                                    let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
-                                    VStack {
-                                        ForEach(0..<rows, id: \.self) { row in
-                                            HStack(spacing: spacing) {
-                                                ForEach(0..<columns, id: \.self) { column in
-                                                    let index = row * columns + column
-                                                    if let config = selectedConfig {
-                                                        if index < selectedConfig!.containers.count {
-                                                            let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
-                                                            ContainerCard(config: selectedConfig!, container: _containers[index])
+                VStack {
+                    HStack {
+                        Text(selectedConfig?.name ?? "")
+                    }
+                    .padding()
+                    GeometryReader { rightGeometry in
+                        let spacing: CGFloat = 1
+                        ScrollView([.horizontal, .vertical]) {
+                            if selectedConfig != nil {
+                                if selectedConfig!.connectionStatus == .CONNECTED {
+                                    if (isLoading) {
+                                        Text("Loading...")
+                                    } else {
+                                        let rows = INTEGERS.CONTAINER_ROW_COUNT.rawValue
+                                        VStack {
+                                            ForEach(0..<rows, id: \.self) { row in
+                                                HStack(spacing: spacing) {
+                                                    ForEach(0..<columns, id: \.self) { column in
+                                                        let index = row * columns + column
+                                                        if let config = selectedConfig {
+                                                            if index < selectedConfig!.containers.count {
+                                                                let _containers = Binding { config.containers } set: { selectedConfig?.containers = $0 }
+                                                                ContainerCard(config: selectedConfig!, container: _containers[index])
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            
+                                        }
+                                        .onReceive(timer) { _ in
+                                            if selectedConfig != nil {
+                                                if selectedConfig!.connectionStatus == .CONNECTED {
+                                                    DispatchQueue.global(qos: .utility).async {
+                                                        let _containers = fetchContainersState(for: selectedConfig!)
+                                                        if searchFilter.count == 0 {
+                                                            selectedConfig?.containers = _containers
+                                                            containers = selectedConfig?.containers ?? []
+                                                        } else {
+                                                            if (selectedContainer != nil) {
+                                                                let containerSelected = _containers.first(where: {$0.name == selectedContainer!.name})
+                                                                if containerSelected != nil {
+                                                                    selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected!)
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                        
+                                        .frame(maxWidth: .infinity)
                                     }
-                                    .onReceive(timer) { _ in
-                                        if selectedConfig != nil {
-                                            if selectedConfig!.connectionStatus == .CONNECTED {
-                                                DispatchQueue.global(qos: .utility).async {
-                                                    let _containers = fetchContainersState(for: selectedConfig!)
-                                                    if searchFilter.count == 0 {
-                                                        selectedConfig?.containers = _containers
-                                                        containers = selectedConfig?.containers ?? []
-                                                    } else {
-                                                        let containerSelected = _containers.first(where: {$0.name == selectedContainer!.name})!
-                                                        selectedConfig!.containers = Array<Container>(arrayLiteral: containerSelected)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .frame(maxWidth: .infinity)
+                                } else {
+                                    Text("Not connected")
                                 }
                             } else {
-                                Text("Not connected")
-                            }
-                        } else {
-                            Text("No configuration selected")
-                        }
-                    }
-                    .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
-                    .onAppear {
-                        containerGeometryProxy = rightGeometry
-                    }
-                    .searchable(text: $searchFilter) {
-                        ForEach(selectedConfig?.containers ?? []) { container in
-                            if container.name.contains(searchFilter) {
-                                Text(container.name)
-                                    .onTapGesture {
-                                        selectedConfig?.containers = [container]
-                                        selectedContainer = container
-                                    }
+                                Text("No configuration selected")
                             }
                         }
-                    }
-                    .onChange(of: searchFilter) { _ in
-                        if searchFilter.count == 0 {
-                            selectedConfig?.containers = containers
+                        .background(Color(hex: COLORS_HEX.BLACK_BACKGROUND.rawValue))
+                        .onAppear {
+                            containerGeometryProxy = rightGeometry
+                        }
+                        .searchable(text: $searchFilter) {
+                            ForEach(selectedConfig?.containers ?? []) { container in
+                                if container.name.contains(searchFilter) {
+                                    Text(container.name)
+                                        .onTapGesture {
+                                            selectedConfig?.containers = [container]
+                                            selectedContainer = container
+                                        }
+                                }
+                            }
+                        }
+                        .onChange(of: searchFilter) { _ in
+                            if searchFilter.count == 0 {
+                                selectedConfig?.containers = containers
+                            }
                         }
                     }
                 }
+                
             }
         }
     }
@@ -195,22 +206,14 @@ struct ContentView: View {
     }
     
     private func toggleSelection(for config: Config) -> Void {
-        isLoading = true
-        if selectedConfig?.id == config.id {
-            selectedConfig = nil
-            return
-        }
+        print("SELECTED " + config.name)
         for i in 0..<configs.count {
-            if configs[i].id == config.id {
-                configs[i].isSelected = true
-                continue
-            }
             configs[i].isSelected = false
+            if config.id == configs[i].id {
+                configs[i].isSelected = true
+                selectedConfig = configs[i]
+            }
         }
-        selectedConfig = config
-        selectedConfig?.containers = []
-        selectedConfig?.isSelected = true
-        isLoading = false
     }
     
     private func toggleConnection(for config: Config) -> Void {
@@ -226,11 +229,12 @@ struct ContentView: View {
                 configs[index].connectionStatus = .CONNECTING
                 if connect(to: config) {
                     do {
-                        selectedConfig = nil
                         containers = try sshService.fetchContainers(of: config) ?? []
                         configs[index].containers = containers
                         configs[index].connectionStatus = .CONNECTED
-                        selectedConfig = configs[index]
+                        if selectedConfig == nil {
+                            selectedConfig = configs[index]
+                        }
                     } catch {
                         DispatchQueue.main.async {
                             Utils.alertError(error: error)

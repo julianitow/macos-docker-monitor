@@ -12,6 +12,7 @@ struct docker_compose_monitorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .navigationTitle("Docker compose GUI Monitor")
         }
     }
 }
